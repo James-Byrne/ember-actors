@@ -1,0 +1,35 @@
+<div class="border border-sold-border-blue-500 p-2 m-2">
+  <div>UiTabs</div>
+
+  <button
+    type="button"
+    class="border border-solid border-black bg-blue-500 p-2 m-2"
+    {{on 'click' (fn this.wakeTabContext)}}>
+      WAKE SearchOrders
+  </button>
+
+  <button
+    type="button"
+    class="border border-solid border-black bg-blue-500 p-2 m-2"
+    {{on 'click' (fn this.selectTab "details")}}>
+      Select details
+  </button>
+
+  {{yield (hash
+    ui=(hash
+      tab=(component "ui-tabs/tab"
+        registerTab=this.registerTab
+        getTabMachine=this.getTabMachine
+      )
+    )
+    state=(hash
+      name=@name
+      isArchived=this.isArchived
+      isActive=this.isActive
+    )
+    actions=(hash
+      registerTab=this.registerTab
+      closeTab=this.closeTab
+    )
+  )}}
+</div>

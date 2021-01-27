@@ -1,5 +1,21 @@
-{{!-- The following component displays Ember's default welcome message. --}}
-<WelcomePage />
-{{!-- Feel free to remove this! --}}
-
 {{outlet}}
+
+<div class="border border-sold-border-blue-500 p-2 m-2">
+  <div>Application</div>
+  <button
+    type="button"
+    class="border border-solid border-black bg-blue-500 p-2 m-2"
+    {{on 'click' (fn this.archiveTabContext "search-orders")}}>
+      Archive SearchOrders
+  </button>
+</div>
+
+<UiTabs @name="search-orders" as |tabs|>
+  <div class="border border-sold-border-blue-500 p-2 m-2">
+    <div>{{tabs.state.name}} isArchived: {{tabs.state.isArchived}}</div>
+    <div>{{tabs.state.name}} isActive: {{tabs.state.isActive}}</div>
+  </div>
+  <tabs.ui.tab @name="details" @label="details"/>
+  <tabs.ui.tab @name="customer-info" @label="customer info"/>
+  <tabs.ui.tab @name="comments" @label="comments"/>
+</UiTabs>
