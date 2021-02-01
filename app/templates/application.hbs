@@ -11,11 +11,18 @@
 </div>
 
 <UiTabs @name="search-orders" as |tabs|>
-  <div class="border border-sold-border-blue-500 p-2 m-2">
+  <div class="border border-solid border-blue-500 p-2 m-2">
     <div>{{tabs.state.name}} isArchived: {{tabs.state.isArchived}}</div>
     <div>{{tabs.state.name}} isActive: {{tabs.state.isActive}}</div>
   </div>
-  <tabs.ui.tab @name="details" @label="details"/>
-  <tabs.ui.tab @name="customer-info" @label="customer info"/>
-  <tabs.ui.tab @name="comments" @label="comments"/>
+
+  <div>
+    <tabs.ui.tab @name="details" @label="details" @content={{component "details"}} />
+    <tabs.ui.tab @name="customer-info" @label="customer info" @content={{component "customer-info"}} />
+    <tabs.ui.tab @name="comments" @label="comments" @content={{component "comments"}} />
+  </div>
+
+  <div class="p-4 border border-solid m-2 border-black">
+    <tabs.ui.content/>
+  </div>
 </UiTabs>

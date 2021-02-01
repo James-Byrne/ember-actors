@@ -6,7 +6,7 @@ import { useMachine, interpreterFor } from 'ember-statecharts';
 // @ts-ignore
 import { use } from 'ember-usable';
 
-const c = Machine({
+const tabServiceMachine = Machine({
   id: 'tabsService',
   initial: 'idle',
   context: {
@@ -49,9 +49,7 @@ const c = Machine({
 
 
 export default class TabsService extends Service {
-  @use statechart = useMachine(c)
-    // .onTransition((...args) => console.log('service > onTransition', args))
-    // .update((...args) => console.log('service > update', args));
+  @use statechart = useMachine(tabServiceMachine);
 
   get machine() {
     return interpreterFor(this.statechart);

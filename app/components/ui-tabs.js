@@ -1,4 +1,5 @@
 import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
 
 import { action } from '@ember/object';
 import { inject as service } from '@ember/service';
@@ -13,7 +14,7 @@ const tabsMachine = Machine({
   id: 'search-orders',
   initial: 'active',
   context: {
-    tabs: []
+    tabs: [],
   },
   on: {
     REGISTER_TAB: [
@@ -22,7 +23,14 @@ const tabsMachine = Machine({
       },
       {
         actions: assign({
-          tabs: (c, e) => [...c.tabs, { id: e.tabId, actor: spawn(e.tab) }]
+          tabs: (c, e) => [
+            ...c.tabs,
+            {
+              id: e.tabId,
+              actor: spawn(e.tab),
+              content: e.contentComponent
+            }
+          ]
         })
       },
     ],
@@ -50,7 +58,10 @@ const tabsMachine = Machine({
       on: {
         ARCHIVE: 'archived',
         TAB_SELECTED: {
-          actions: 'deselectTabs'
+          actions: [
+            'updateSelectedTabContent',
+            'deselectTabs'
+          ]
         }
       }
     },
@@ -63,8 +74,6 @@ const tabsMachine = Machine({
 }, {
   actions: {
     deselectTabs(c, e) {
-      console.log('deselectTabs', { c, e });
-
       c.tabs.forEach(tab => {
         if (tab.id === e.tabId) return;
         tab.actor.send('DESELECT');
@@ -81,9 +90,17 @@ const tabsMachine = Machine({
 export default class UiTabsComponent extends Component {
   @service tabs;
 
-  @use statechart = useMachine(tabsMachine);
-    // .onTransition((...args) => console.log('ui-tabs > onTransition', args))
-    // .update((...args) => console.log('ui-tabs > update', args));
+  @tracked selectedTabContentComponent;
+
+  @use statechart = useMachine(tabsMachine)
+    .withConfig({
+      actions: {
+        updateSelectedTabContent: (c, e) => {
+          const selectedTab = c.tabs.find(tab => tab.id === e.tabId);
+          if (selectedTab) this.selectedTabContentComponent = selectedTab.content;
+        }
+      }
+    });
 
   @matchesState('archived') isArchived;
   @matchesState('active') isActive;
@@ -106,13 +123,12 @@ export default class UiTabsComponent extends Component {
   }
 
   @action
-  registerTab(tab, tabId) {
-    this.machine.send('REGISTER_TAB', { tab, tabId });
+  registerTab({ tab, id, contentComponent }) {
+    this.machine.send('REGISTER_TAB', { tab, tabId: id, contentComponent });
   }
 
   @action
   getTabMachine(tabId) {
-    // console.log('getTabMachine', this.machine.state.context.tabs.find(tab => tab.id === tabId));
     return this.machine.state.context.tabs.find(tab => tab.id === tabId);
   }
 
@@ -123,7 +139,6 @@ export default class UiTabsComponent extends Component {
 
   @action
   selectTab(tabId) {
-    console.log('selectTab', tabId);
     this.machine.send('SELECT_TAB', { tabId });
   }
 }

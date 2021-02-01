@@ -54,7 +54,11 @@ export default class TabComponent extends Component {
     // register with the tabContext
     next(() => {
       // register the tab with the tabContext
-      this.args.registerTab(tabMachine, this.args.name);
+      this.args.registerTab({
+        tab: tabMachine,
+        id: this.args.name,
+        contentComponent: this.args.content
+      });
 
       // get the newly created actor
       this.tabMachine = this.args.getTabMachine(this.args.name).actor;
