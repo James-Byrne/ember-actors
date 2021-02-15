@@ -14,35 +14,68 @@ const tabServiceMachine = Machine({
   },
   on: {
     ARCHIVE_TAB_CONTEXT: {
-      actions: send('ARCHIVE', {
-        to:  (_, e) => e.tabContextId
-      }),
+      actions: 'archiveTabContext',
+    },
+    TAB_CONTEXT_WOKE: {
+      actions: 'setTabContextAwake',
     },
     REGISTER_TAB_CONTEXT: [
       {
-        cond: 'contextIsArchived',
-        actions: send('WAKE', {
-          to: (_, e) => e.tabContextId
-        })
+        cond: 'contextDoesNotExist',
+        actions: [
+          assign({
+            tabContexts: (c, e) => [
+              ...c.tabContexts,
+              {
+                id: e.tabContextId,
+                isArchived: false,
+                actor: spawn(e.tabContext, e.tabContextId)
+              }
+            ]
+          })
+        ]
       },
       {
-        actions: assign({
-          tabContexts: (c, e) => [
-            ...c.tabContexts,
-            spawn(e.tabContext, e.tabContextId)
-          ]
-        })
-      }
+        cond: 'contextIsArchived',
+        actions: send(
+          (c, e) => ({ type: 'WAKE', id: e.tabContextId }),
+          {
+            to: (c, e) =>
+              c.tabContexts.find(tc => tc.id === e.tabContextId).actor
+          }
+        )
+      },
     ]
   },
   states: {
     idle: {}
   }
 }, {
+  actions: {
+    setTabContextAwake:  assign({
+      tabContexts: ({ tabContexts }, event) =>
+        tabContexts.map(tc => {
+          if (tc.id !== event.tabContextId) return tc;
+          tc.isArchived = false;
+          return tc;
+        })
+    }),
+    archiveTabContext: assign({
+      tabContexts: ({ tabContexts }, event) =>
+        tabContexts.map(tc => {
+          if (tc.id !== event.tabContextId) return tc;
+          tc.isArchived = true;
+          return tc;
+        })
+    })
+  },
   guards: {
-    contextIsArchived() {
-      // check if the context is archived
-      return false;
+    contextIsArchived(context, event) {
+      const tabContext = context.tabContexts.find(tc => tc.id === event.tabContextId);
+      return tabContext.isArchived;
+    },
+    contextDoesNotExist(context, event) {
+      return !context.tabContexts.find(tc => tc.id === event.tabContextId);
     }
   }
 });
@@ -60,16 +93,7 @@ export default class TabsService extends Service {
   }
 
   getTabContext(tabContextId) {
-    return this.machineContext.tabContexts.find(tc => {
-      return tc.id === tabContextId
-    });
-  }
-
-  getTab(tabContextId, tabId) {
-    const tabContext = this.getTabContext(tabContextId);
-
-    // placeholder
-    return { tabContext, tabId };
+    return this.machineContext.tabContexts.find(tc => tc.id === tabContextId);
   }
 
   removeTab(tabContextId, tabId) {
@@ -79,10 +103,10 @@ export default class TabsService extends Service {
     });
   }
 
-  registerTabContext(tabContext, tabContextId) {
+  registerTabContext({ tabContext, id }) {
     return this.machine.send('REGISTER_TAB_CONTEXT', {
       tabContext,
-      tabContextId
+      tabContextId: id
     });
   }
 

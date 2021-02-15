@@ -3,7 +3,7 @@
   {{on "click" this.selectTab}}
   class="
      {{if this.tabState.isSelected "border-red-500" " border-black"}}
-     p-4 border border-solid m-2
+     p-4 border border-solid m-2 focus:outline-none
      ">
   {{@label}} is selected: {{if this.tabState.isSelected "true" "false"}}
 </button>

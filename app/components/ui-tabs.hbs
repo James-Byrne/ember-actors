@@ -1,18 +1,9 @@
 <div class="border border-sold-border-blue-500 p-2 m-2">
-  <div>UiTabs</div>
-
   <button
     type="button"
-    class="border border-solid border-black bg-blue-500 p-2 m-2"
-    {{on 'click' (fn this.wakeTabContext)}}>
-      WAKE SearchOrders
-  </button>
-
-  <button
-    type="button"
-    class="border border-solid border-black bg-blue-500 p-2 m-2"
-    {{on 'click' (fn this.selectTab "details")}}>
-      Select details
+    class="border border-solid border-black bg-blue-500 text-white p-2 m-2"
+    {{on 'click' this.selectFirstTab}}>
+      Select first tab
   </button>
 
   {{yield (hash
@@ -21,12 +12,13 @@
         registerTab=this.registerTab
         getTabMachine=this.getTabMachine
       )
-      content=(component this.selectedTabContentComponent)
+      content=(component this.tabContextState.context.selectedTabContentComponent)
     )
     state=(hash
       name=@name
-      isArchived=this.isArchived
-      isActive=this.isActive
+      isArchived=this.tabContextState.isArchived
+      isActive=this.tabContextState.isActive
+      selectedTabId=this.tabContextState.context.selectedTabId
     )
     actions=(hash
       registerTab=this.registerTab

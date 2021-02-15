@@ -2,27 +2,57 @@
 
 <div class="border border-sold-border-blue-500 p-2 m-2">
   <div>Application</div>
+
   <button
     type="button"
-    class="border border-solid border-black bg-blue-500 p-2 m-2"
-    {{on 'click' (fn this.archiveTabContext "search-orders")}}>
-      Archive SearchOrders
+    class="border border-solid border-black bg-blue-500 text-white p-2 m-2"
+    {{on 'click' this.toggleShowListings}}>
+      Toggle Listings
+  </button>
+
+  <button
+    type="button"
+    class="border border-solid border-black bg-blue-500 text-white p-2 m-2"
+    {{on 'click' this.toggleSearchOrders}}>
+      Toggle Search-Orders
   </button>
 </div>
 
-<UiTabs @name="search-orders" as |tabs|>
-  <div class="border border-solid border-blue-500 p-2 m-2">
-    <div>{{tabs.state.name}} isArchived: {{tabs.state.isArchived}}</div>
-    <div>{{tabs.state.name}} isActive: {{tabs.state.isActive}}</div>
-  </div>
+{{#if this.showListings}}
+  <UiTabs @name="listings" @defaultTab="events" as |tabs|>
+    <div class="border border-solid border-blue-500 p-2 m-2">
+      <div>{{tabs.state.name}} isArchived: {{tabs.state.isArchived}}</div>
+      <div>{{tabs.state.name}} isActive: {{tabs.state.isActive}}</div>
+      <div>{{tabs.state.name}} selectedTabId: {{tabs.state.selectedTabId}}</div>
+    </div>
 
-  <div>
-    <tabs.ui.tab @name="details" @label="details" @content={{component "details"}} />
-    <tabs.ui.tab @name="customer-info" @label="customer info" @content={{component "customer-info"}} />
-    <tabs.ui.tab @name="comments" @label="comments" @content={{component "comments"}} />
-  </div>
+    <div>
+      <tabs.ui.tab @name="events" @label="Events" @content={{component "details"}} />
+      <tabs.ui.tab @name="products" @label="Products" @content={{component "comments"}} />
+    </div>
 
-  <div class="p-4 border border-solid m-2 border-black">
-    <tabs.ui.content/>
-  </div>
-</UiTabs>
+    <div class="p-4 border border-solid m-2 border-black">
+      <tabs.ui.content/>
+    </div>
+  </UiTabs>
+{{/if}}
+
+{{#if this.showSearchOrders}}
+  <UiTabs @name="search-orders" as |tabs|>
+    <div class="border border-solid border-blue-500 p-2 m-2">
+      <div>{{tabs.state.name}} isArchived: {{tabs.state.isArchived}}</div>
+      <div>{{tabs.state.name}} isActive: {{tabs.state.isActive}}</div>
+      <div>{{tabs.state.name}} selectedTabId: {{tabs.state.selectedTabId}}</div>
+    </div>
+
+    <div>
+      <tabs.ui.tab @name="details" @label="details" @content={{component "details"}} />
+      <tabs.ui.tab @name="customer-info" @label="customer info" @content={{component "customer-info"}} />
+      <tabs.ui.tab @name="comments" @label="comments" @content={{component "comments"}} />
+    </div>
+
+    <div class="p-4 border border-solid m-2 border-black">
+      <tabs.ui.content/>
+    </div>
+  </UiTabs>
+{{/if}}

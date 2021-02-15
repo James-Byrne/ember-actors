@@ -24,11 +24,7 @@ const tabMachine = Machine({
         }
       }
     },
-    selected: {
-      on: {
-        SELECT: 'idle'
-      }
-    }
+    selected: {}
   }
 });
 
