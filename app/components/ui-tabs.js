@@ -15,6 +15,22 @@ const tabsMachine = Machine({
     selectedTabContentComponent: undefined,
   },
   on: {
+    REGISTER_ROUTABLE_TAB: [
+      {
+        cond: 'tabAlreadyRegistered'
+      },
+      {
+        cond: 'noTabSelected',
+        actions: [
+          'spawnRoutableTab',
+          'updateSelectedTab',
+          'selectTab'
+        ]
+      },
+      {
+        actions: 'spawnRoutableTab'
+      },
+    ],
     REGISTER_TAB: [
       {
         cond: 'tabAlreadyRegistered'
@@ -82,7 +98,21 @@ const tabsMachine = Machine({
         {
           id: e.tabId,
           actor: spawn(e.tab),
-          content: e.contentComponent
+          content: e.contentComponent,
+          routable: false
+        }
+      ]
+    }),
+    spawnRoutableTab: assign({
+      tabs: (c, e) => [
+        ...c.tabs,
+        {
+          id: e.tabId,
+          name: e.name,
+          label: e.label,
+          actor: spawn(e.tab),
+          content: e.contentComponent,
+          routable: true
         }
       ]
     }),
@@ -95,7 +125,7 @@ const tabsMachine = Machine({
     selectTab: send(
       (c, e) => ({ type: 'SELECT', id: e.tabId }),
       {
-        to: (c, e) => c.tabs.find(tab => tab.id === e.tabId).actor
+        to: (c, e) => c.tabs.find(tab => tab.id === e.tabId)?.actor
       }
     )
   },
@@ -165,6 +195,10 @@ export default class UiTabsComponent extends Component {
 
   get selectedTabId() {
     return this.tabContextState.context.selectedTabId;
+  }
+
+  get routableTabs() {
+    return this.tabContextState?.context.tabs.filter(t => t.routable) ?? [];
   }
 
   @action

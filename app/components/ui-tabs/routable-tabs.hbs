@@ -1,0 +1,15 @@
+{{log "@routableTabs" @routableTabs}}
+
+{{#each @routableTabs as |tabState|}}
+
+  {{log "tabState" tabState}}
+
+  <UiTabs::Tab
+    @name={{tabState.name}}
+    @label={{tabState.label}}
+    @content={{tabState.content}}
+    @registerTab={{@registerTab}}
+    @getTabMachine={{@getTabMachine}}
+    />
+{{/each}}
+

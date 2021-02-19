@@ -13,6 +13,12 @@ const tabServiceMachine = Machine({
     tabContexts: []
   },
   on: {
+    REGISTER_ROUTABLE_TAB: {
+      cond: 'contextExists',
+      actions: send((_, e) => e, {
+        to: (c, e) => c.tabContexts.find(t => t.id === e.tabContextId).actor
+      })
+    },
     ARCHIVE_TAB_CONTEXT: {
       actions: 'archiveTabContext',
     },
@@ -74,6 +80,9 @@ const tabServiceMachine = Machine({
       const tabContext = context.tabContexts.find(tc => tc.id === event.tabContextId);
       return tabContext.isArchived;
     },
+    contextExists(context, event) {
+      return context.tabContexts.find(tc => tc.id === event.tabContextId);
+    },
     contextDoesNotExist(context, event) {
       return !context.tabContexts.find(tc => tc.id === event.tabContextId);
     }
@@ -114,6 +123,10 @@ export default class TabsService extends Service {
     return this.machine.send('ARCHIVE_TAB_CONTEXT', {
       tabContextId
     });
+  }
+
+  registerRoutableTab(routableTabSpec) {
+    this.machine.send('REGISTER_ROUTABLE_TAB', routableTabSpec);
   }
 
   send(...args) {

@@ -6,13 +6,18 @@
       Select first tab
   </button>
 
-  {{yield (hash
+  {{#let (hash
     ui=(hash
       tab=(component "ui-tabs/tab"
         registerTab=this.registerTab
         getTabMachine=this.getTabMachine
       )
       content=(component this.tabContextState.context.selectedTabContentComponent)
+      routableTabs=(component "ui-tabs/routable-tabs"
+        routableTabs=this.routableTabs
+        registerTab=this.registerTab
+        getTabMachine=this.getTabMachine
+      )
     )
     state=(hash
       name=@name
@@ -24,5 +29,8 @@
       registerTab=this.registerTab
       closeTab=this.closeTab
     )
-  )}}
+    ) as |uiTabs|}}
+
+    {{yield uiTabs}}
+  {{/let}}
 </div>

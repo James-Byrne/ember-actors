@@ -1,5 +1,3 @@
-{{outlet}}
-
 <div class="border border-sold-border-blue-500 p-2 m-2">
   <div>Application</div>
 
@@ -24,11 +22,34 @@
       <div>{{tabs.state.name}} isArchived: {{tabs.state.isArchived}}</div>
       <div>{{tabs.state.name}} isActive: {{tabs.state.isActive}}</div>
       <div>{{tabs.state.name}} selectedTabId: {{tabs.state.selectedTabId}}</div>
+
+      <LinkTo @route="application">
+        <button
+          type="button"
+          class="border border-solid border-black bg-blue-500 text-white p-2 my-2">
+            Goto /
+        </button>
+      </LinkTo>
+
+      <LinkTo @route="events">
+        <button
+          type="button"
+          class="border border-solid border-black bg-blue-500 text-white p-2 my-2">
+            Goto Events
+        </button>
+      </LinkTo>
+
+      <LinkTo @route="products">
+        <button
+          type="button"
+          class="border border-solid border-black bg-blue-500 text-white p-2 my-2">
+            Goto Products
+        </button>
+      </LinkTo>
     </div>
 
     <div>
-      <tabs.ui.tab @name="events" @label="Events" @content={{component "details"}} />
-      <tabs.ui.tab @name="products" @label="Products" @content={{component "comments"}} />
+      <tabs.ui.routableTabs />
     </div>
 
     <div class="p-4 border border-solid m-2 border-black">
@@ -56,3 +77,5 @@
     </div>
   </UiTabs>
 {{/if}}
+
+{{outlet}}

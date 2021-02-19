@@ -1,12 +1,13 @@
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 
+import { inject as service } from '@ember/service';
 import { next } from '@ember/runloop'
 import { action } from '@ember/object';
 
 import { Machine, sendParent } from 'xstate';
 
-const tabMachine = Machine({
+export const tabMachine = Machine({
   id: 'tab',
   initial: 'idle',
   on: {
@@ -41,8 +42,18 @@ class XstateWrapper {
 }
 
 export default class TabComponent extends Component {
+  @service tabs;
+
   @tracked tabMachine = tabMachine;
   @tracked tabState;
+
+  get registerTab() {
+    return this.args.registerTab ?? this.tabs.registerTab(this.args.tabContextId);
+  }
+
+  get getTabMachine() {
+    return this.args.getTabMachine ?? this.tabs.getTabMachine(this.args.tabContextId);
+  }
 
   constructor(owner, args) {
     super(owner, args);
@@ -50,14 +61,14 @@ export default class TabComponent extends Component {
     // register with the tabContext
     next(() => {
       // register the tab with the tabContext
-      this.args.registerTab({
+      this.registerTab({
         tab: tabMachine,
         id: this.args.name,
         contentComponent: this.args.content
       });
 
       // get the newly created actor
-      this.tabMachine = this.args.getTabMachine(this.args.name).actor;
+      this.tabMachine = this.getTabMachine(this.args.name)?.actor;
 
       // when the actor changes state update the local tabState
       this.tabMachine.onTransition(state => this.tabState = new XstateWrapper(state));
