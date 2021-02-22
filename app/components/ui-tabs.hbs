@@ -14,6 +14,7 @@
       )
       content=(component this.tabContextState.context.selectedTabContentComponent)
       routableTabs=(component "ui-tabs/routable-tabs"
+        tabContextId=@name
         routableTabs=this.routableTabs
         registerTab=this.registerTab
         getTabMachine=this.getTabMachine

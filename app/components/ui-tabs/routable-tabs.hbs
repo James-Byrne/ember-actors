@@ -1,11 +1,6 @@
-{{log "@routableTabs" @routableTabs}}
-
 {{#each @routableTabs as |tabState|}}
-
-  {{log "tabState" tabState}}
-
   <UiTabs::Tab
-    @name={{tabState.name}}
+    @name={{tabState.id}}
     @label={{tabState.label}}
     @content={{tabState.content}}
     @registerTab={{@registerTab}}

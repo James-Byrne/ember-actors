@@ -17,19 +17,19 @@ const tabsMachine = Machine({
   on: {
     REGISTER_ROUTABLE_TAB: [
       {
-        cond: 'tabAlreadyRegistered'
-      },
-      {
-        cond: 'noTabSelected',
+        cond: 'tabAlreadyRegistered',
         actions: [
-          'spawnRoutableTab',
           'updateSelectedTab',
           'selectTab'
         ]
       },
       {
-        actions: 'spawnRoutableTab'
-      },
+        actions: [
+          'spawnRoutableTab',
+          'updateSelectedTab',
+          'selectTab'
+        ]
+      }
     ],
     REGISTER_TAB: [
       {

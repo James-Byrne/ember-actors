@@ -15,7 +15,7 @@ const tabServiceMachine = Machine({
   on: {
     REGISTER_ROUTABLE_TAB: {
       cond: 'contextExists',
-      actions: send((_, e) => e, {
+      actions: send((_, e) => ({ ...e, type: 'REGISTER_ROUTABLE_TAB' }), {
         to: (c, e) => c.tabContexts.find(t => t.id === e.tabContextId).actor
       })
     },

@@ -47,28 +47,20 @@ export default class TabComponent extends Component {
   @tracked tabMachine = tabMachine;
   @tracked tabState;
 
-  get registerTab() {
-    return this.args.registerTab ?? this.tabs.registerTab(this.args.tabContextId);
-  }
-
-  get getTabMachine() {
-    return this.args.getTabMachine ?? this.tabs.getTabMachine(this.args.tabContextId);
-  }
-
   constructor(owner, args) {
     super(owner, args);
 
     // register with the tabContext
     next(() => {
       // register the tab with the tabContext
-      this.registerTab({
+      this.args.registerTab({
         tab: tabMachine,
         id: this.args.name,
         contentComponent: this.args.content
       });
 
       // get the newly created actor
-      this.tabMachine = this.getTabMachine(this.args.name)?.actor;
+      this.tabMachine = this.args.getTabMachine(this.args.name)?.actor;
 
       // when the actor changes state update the local tabState
       this.tabMachine.onTransition(state => this.tabState = new XstateWrapper(state));
