@@ -3,7 +3,6 @@ import Service from '@ember/service';
 import { Machine, send, assign, spawn } from 'xstate';
 import { useMachine, interpreterFor } from 'ember-statecharts';
 
-// @ts-ignore
 import { use } from 'ember-usable';
 
 const tabServiceMachine = Machine({

@@ -1,9 +1,20 @@
-<button
-   type="button"
-  {{on "click" this.selectTab}}
-  class="
+{{#if @route}}
+   <LinkTo @route={{@route}} class="
      {{if this.tabState.isSelected "border-red-500" " border-black"}}
-     p-4 border border-solid m-2 focus:outline-none
-     ">
-  {{@label}} is selected: {{if this.tabState.isSelected "true" "false"}}
-</button>
+     p-4 border border-solid m-2 focus:outline-none inline-block
+     "
+     {{on "click" this.selectTab}}
+     >
+     {{@label}} is selected: {{if this.tabState.isSelected "true" "false"}}
+   </LinkTo>
+{{else}}
+   <button
+      type="button"
+     {{on "click" this.selectTab}}
+     class="
+        {{if this.tabState.isSelected "border-red-500" " border-black"}}
+        p-4 border border-solid m-2 focus:outline-none
+        ">
+     {{@label}} is selected: {{if this.tabState.isSelected "true" "false"}}
+   </button>
+{{/if}}

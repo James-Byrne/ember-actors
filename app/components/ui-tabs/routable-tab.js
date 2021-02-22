@@ -19,7 +19,8 @@ export default class TabComponent extends Component {
         label: this.args.label ?? this.args.name,
         tabContextId: this.args.tabContextId,
         contentComponent: this.args.content,
-        tab: tabMachine
+        tab: tabMachine,
+        route: this.args.route
       });
     });
   }

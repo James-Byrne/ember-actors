@@ -112,7 +112,8 @@ const tabsMachine = Machine({
           label: e.label,
           actor: spawn(e.tab),
           content: e.contentComponent,
-          routable: true
+          routable: true,
+          route: e.route
         }
       ]
     }),
@@ -214,11 +215,6 @@ export default class UiTabsComponent extends Component {
   @action
   closeTab(tabId) {
     this.tabContextMachine.send('CLOSE_TAB', { tabId });
-  }
-
-  @action
-  selectTab(tabId) {
-    this.tabContextMachine.send('SELECT_TAB', { tabId });
   }
 
   @action

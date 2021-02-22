@@ -1,5 +1,5 @@
 <div class="border border-sold-border-blue-500 p-2 m-2">
-  <div>Application</div>
+  <div class="p-2">Application</div>
 
   <button
     type="button"
@@ -17,7 +17,7 @@
 </div>
 
 {{#if this.showListings}}
-  <UiTabs @name="listings" @defaultTab="events" as |tabs|>
+  <UiTabs @name="listings" as |tabs|>
     <div class="border border-solid border-blue-500 p-2 m-2">
       <div>{{tabs.state.name}} isArchived: {{tabs.state.isArchived}}</div>
       <div>{{tabs.state.name}} isActive: {{tabs.state.isActive}}</div>
@@ -49,7 +49,13 @@
     </div>
 
     <div>
-      <tabs.ui.tab @name="search" @label="details" @content={{component "customer-info"}} />
+      <UiTabs::RoutableTab
+        @tabContextId="listings"
+        @name="search"
+        @label="Search"
+        @route="application"
+        @content={{component "customer-info"}}
+        />
       <tabs.ui.routableTabs />
     </div>
 
